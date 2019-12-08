@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Enzo Mari: Tavolo Rettangolare</title>
+		<style>
+      .drawing > div { background: white; }
+
+      body {
+        margin: 0; 
+        padding: 5vh 3vh 9vh 6vw;
+        font-size: 14px;
+        font-family: sans-serif;
+        text-transform: uppercase;
+      }
+      text, output {
+        text-transform: none;
+      }
+      input {
+        border: none;
+        border-bottom: 1px dashed black;
+        text-align: right;
+        font-weight: bold;
+      }
+      
+
+      .paper .inputs {
+        padding: 3ex 3vw;
+        box-sizing: border-box;
+      }
+      .paper .drawing {
+        padding: 3vh 3vw 0 3vw;
+        box-sizing: border-box;
+      }
+      .paper .tables {
+        padding: 0 3vh;
+        box-sizing: border-box;
+      }
+      
+      .paper {
+        display: flex;
+        flex-direction: column;
+        outline: 1px solid black;
+      }
+      .paper svg.drawing {
+        width: 100%;
+      }
+      .paper .inputs-form {
+        margin: 0;
+      }
+      .paper label:after {
+        content: ':';
+      }
+      .paper input {
+        width: 4em;
+      }
+      .paper svg {
+        width: 100%;
+      }
+      .paper table {
+        border-collapse: collapse;
+        margin: 3ex 3em 3ex 0;
+        display: inline-block;
+      }
+      .paper table th,
+      .paper table td {
+        border: 1px solid black;
+        padding: 1ex 1em;
+        text-align: center;
+      }
+      #tavoleite th:first-child {
+        border-left: none;
+        font-family: serif;
+      }
+      #material .nr th:first-child {
+        font-family: serif;
+      }
+      #material .nr th {
+        padding: 0.5ex 1em 0 0.5em;
+        text-align: left;
+      }
+      #material td {
+        padding: 0.5ex 1em 0.75ex 0.5em;
+      }
+      #material .nr strong {
+        font-size: 2.5em;
+      }
+      #material td {
+        text-align: left;
+      }
+      #material .addr span {
+        padding-left: 1.25em;
+      }
+      text.lath-title {
+        font-family: serif;
+        font-weight: bold;
+      }
+      #material .addr span:first-child {
+        padding-left: 0;
+      }
+      .paper rect {
+        transform-origin: center;
+        fill: white;
+        stroke: black;
+        stroke-width: 2px;
+      }
+      .paper rect.stirn {
+        fill: #aaa;
+      }
+      .paper line {
+        stroke-width: 1px;
+        stroke: black;
+      }
+      .paper text {
+        font-size: 26px;
+      }
+      .paper rect.contour {
+        fill: none;
+      }
+      .paper rect.plate.lath.top-rects {
+        stroke-width: 0.5px;
+      }
+		</style>
+	</head>
+	<body>
+    <div class=paper>
+      <div class=inputs>
+        <form id=inputs-form class=inputs-form>
+          <label>Lath</label>
+          <input id=lath-height-input type="input">
+          x
+          <input id=lath-width-input type="input">,
+
+          <label>Width</label>
+          <input id=width-n-lath-input type="input"> N laths
+          (=<output id=width-output>800</output>),
+
+          <label>Length</label>
+          <input id=length-input type="input">,
+
+          <label>Height</label>
+          <input id=height-input type="input">
+        </form>
+      </div>
+      <div class=main>
+        <svg class=drawing preserveAspectRatio="xMinYMin meet" />
+        <!--
+          <div class=perspective>
+            <img src=images/drawing-cropped.jpg>
+          </div>
+          -->
+        <div class=tables>
+          <p>* please rotate 45 degrees or so</p>
+          <h3>Tavoleite Occorrenti</h3>
+          <table id=tavoleite>
+            <tr>
+              <th></th>
+              <th>Sezione</th>
+              <th>Lunghezza</th>
+              <th>Quantita`</th>
+            </tr>
+            <tr>
+              <th>A</th>
+              <td><output id=lath-size-output></td>
+              <td><output id=lath-a-length-output></td>
+              <td><output id=lath-a-nr-output></td>
+            </tr>
+            <tr>
+              <th>B</th>
+              <td>"</td>
+              <td><output id=lath-b-length-output></td>
+              <td>2</td>
+            </tr>
+            <tr>
+              <th>C</th>
+              <td>"</td>
+              <td><output id=lath-c-length-output></td>
+              <td>2</td>
+            </tr>
+            <tr>
+              <th>D</th>
+              <td>"</td>
+              <td></td>
+              <td>4</td>
+            </tr>
+            <tr>
+              <th>E</th>
+              <td>"</td>
+              <td></td>
+              <td>2</td>
+            </tr>
+            <tr>
+              <th>F</th>
+              <td>"</td>
+              <td><output id=lath-f-length-output></td>
+              <td>4</td>
+            </tr>
+            <tr>
+              <th>G</th>
+              <td>"</td>
+              <td><output id=lath-g-length-output></td>
+              <td>4</td>
+            </tr>
+          </table>
+          <table id=material>
+            <tr class=nr>
+              <th>1123 x<strong>B</strong></th>
+              <th>SCALA 1:5</th>
+              <th>5/73</th>
+            </tr>
+            <tr>
+              <td colspan=3>&nbsp;</td>
+            </tr>
+            <tr>
+              <td colspan=3>Tavolo Rettangolare</td>
+            </tr>
+            <tr>
+              <td colspan=3 class=addr>
+                <span>Enzo Mari</span>
+                <span>Piazzale Baracca 10</span>
+                <span>20123 Milano</span>
+                <span>Telefono 4693661</span>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+		<script src="js/d3.min.js"></script>
+		<script src="index.js"></script>
+	</body>
+</html>

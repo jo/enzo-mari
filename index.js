@@ -26,6 +26,8 @@ const svg = d3.select('svg.drawing')
 const table = d3.select('table#tavoleite')
 const tbody = table.append("tbody")
 
+const ground = svg.append('line').attr('class', 'ground')
+
 const renderSide = values => {
   const laths = []
   const x1 = 0
@@ -41,11 +43,67 @@ const renderSide = values => {
     })
   }
   laths.push({
-    name: 'side plate stuetze',
+    name: 'side f',
+    x: x1 + values.width/2 - values.lath.dy - config.lath.x/2,
+    y: y1 + config.lath.x + config.gap,
+    width: config.lath.y,
+    height: 5*values.lath.dy
+  })
+  laths.push({
+    name: 'side f',
+    x: x1 + values.width/2 + config.lath.x/2,
+    y: y1 + config.lath.x + config.gap,
+    width: config.lath.y,
+    height: 5*values.lath.dy
+  })
+  laths.push({
+    name: 'side f stirn top',
+    x: x1 + values.width/2 - config.lath.x/2,
+    y: y1 + config.lath.x + config.gap + values.lath.dy,
+    width: config.lath.x,
+    height: config.lath.y
+  })
+  laths.push({
+    name: 'side f stirn bottom',
+    x: x1 + values.width/2 - config.lath.x/2,
+    y: y1 + config.lath.x + config.gap + 3*values.lath.dy,
+    width: config.lath.x,
+    height: config.lath.y
+  })
+  laths.push({
+    name: 'side d left',
+    x: x1 + values.lath.dy,
+    y: y1,
+    width: config.lath.y,
+    height: config.height
+  })
+  laths.push({
+    name: 'side d right',
+    x: x1 + values.width - 2*values.lath.dy,
+    y: y1,
+    width: config.lath.y,
+    height: config.height
+  })
+  laths.push({
+    name: 'side e queer bottom',
+    x: x1 + values.lath.dy,
+    y: y1 + config.lath.x + config.gap + 4*values.lath.dy,
+    width: values.width - 2*values.lath.dy,
+    height: config.lath.y
+  })
+  laths.push({
+    name: 'side c plate stuetze',
     x: x1,
     y: y1 + config.lath.x + config.gap,
     width: values.width,
     height: config.lath.y
+  })
+  laths.push({
+    name: 'side c plate stuetze top',
+    x: x1,
+    y: y1 + config.lath.x + config.gap,
+    width: values.width,
+    height: config.lath.x
   })
 
   const rects = svg.selectAll('rect.side-rects')
@@ -67,6 +125,65 @@ const renderSide = values => {
     .attr('height', d => d.height)
 
   rects.exit().remove()
+
+
+  const labels = [
+    {
+      title: 'C',
+      name: 'lath-title',
+      x: x1 + config.lath.y/2,
+      y: y1 + config.lath.y/2 + 16 + config.lath.x
+    },
+    {
+      title: 'D**',
+      name: 'lath-title',
+      x: x1 + config.lath.y/2 + values.lath.dy + 16,
+      y: y1 + config.height/2.4
+    },
+    {
+      title: 'D**',
+      name: 'lath-title',
+      x: x1 + values.width - config.lath.y/2 - values.lath.dy + 16,
+      y: y1 + config.height/2.4
+    },
+    {
+      title: 'F',
+      name: 'lath-title',
+      x: x1 + config.lath.y/2 + 3*values.lath.dy + 16,
+      y: y1 + config.height/2.4
+    },
+    {
+      title: 'F',
+      name: 'lath-title',
+      x: x1 + config.lath.y/2 + 4*values.lath.dy + 16 + config.lath.x,
+      y: y1 + config.height/2.4
+    },
+    {
+      title: 'E',
+      name: 'lath-title',
+      x: x1 + config.lath.y/2 + values.lath.dy + 16,
+      y: y1 + config.lath.y/2 + 16 + config.lath.x + 4*values.lath.dy
+    },
+  ]
+  
+  const labelElements = svg.selectAll('text.side-labels')
+    .data(labels)
+
+  labelElements
+    .attr('x', d => d.x)
+    .attr('class', d => d.name + ' side-labels')
+    .attr('x', d => d.x)
+    .attr('y', d => d.y)
+    .text(d => d.title)
+
+  labelElements.enter()
+    .append('text')
+    .attr('class', d => d.name + ' side-labels')
+    .attr('x', d => d.x - 30)
+    .attr('y', d => d.y - 10)
+    .text(d => d.title)
+
+  labelElements.exit().remove()
 }
 
 const renderTop = values => {
@@ -264,6 +381,13 @@ const renderFront = values => {
       height: config.lath.y
     },
     {
+      name: 'queer left top stirn plate',
+      x: x1 + values.indent.pillar - 1*values.lath.dy - 2*config.lath.x - 2*config.gap,
+      y: y1 + config.lath.x + config.gap,
+      width: config.lath.y,
+      height: config.lath.x
+    },
+    {
       name: 'queer left bottom stirn',
       x: x1 + values.indent.pillar - 2*(config.gap +config.lath.x),
       y: y1 + config.lath.x + config.gap + 4*values.lath.dy,
@@ -276,6 +400,20 @@ const renderFront = values => {
       y: y1 + config.lath.x + config.gap,
       width: config.lath.x,
       height: config.lath.y
+    },
+    {
+      name: 'queer right mid stirn plate',
+      x: x1 + config.length/2 - config.lath.y/2,
+      y: y1 + config.lath.x + config.gap,
+      width: config.lath.y,
+      height: config.lath.x
+    },
+    {
+      name: 'queer right top stirn plate',
+      x: x1 + config.length - values.indent.pillar + config.lath.x + 2*config.gap + config.lath.x,
+      y: y1 + config.lath.x + config.gap,
+      width: config.lath.y,
+      height: config.lath.x
     },
     {
       name: 'queer right bottom stirn',
@@ -421,8 +559,26 @@ const renderTable = values => {
   d3.select('#lath-a-nr-output').text(config.widthNLath)
   d3.select('#lath-b-length-output').text(config.length - 2*values.indent.keel)
   d3.select('#lath-c-length-output').text(values.width)
+  d3.select('#lath-d-length-output').text(config.height - config.lath.x)
+  d3.select('#lath-e-length-output').text(values.width - 2*values.lath.dy)
   d3.select('#lath-f-length-output').text(5*values.lath.dy)
   d3.select('#lath-g-length-output').text(3*values.lath.dy)
+  // a
+  const length = config.widthNLath*config.length
+    // b
+    + 2*(config.length - 2*values.indent.keel)
+    // c
+    + 5*values.width
+    // d
+    + 4*(config.height - config.lath.x)
+    // e
+    + 2*(values.width - 2*values.lath.dy)
+    // f
+    + 4*(5*values.lath.dy)
+    // g
+    + 4*(3*values.lath.dy)
+  d3.select('#lath-total-length-output').text(`${length/1000}m`)
+  d3.select('#lath-total-nr-output').text(config.widthNLath + 2 + 5 + 4 + 2 + 4 + 4)
 }
 
 let imageRendered = false
@@ -463,7 +619,7 @@ const updateForm = ({ id, value }) => {
   // console.log(config)
   const dy = config.lath.y + config.gap
   const values = {
-    width: config.widthNLath * dy - config.gap,
+    width: config.widthNLath * dy,
     lath: {
       dy
     },
@@ -482,6 +638,12 @@ const updateForm = ({ id, value }) => {
     height: values.width + config.display.padding + config.height + 10
   }
   svg.attr('viewBox', `0 0 ${svgDim.width} ${svgDim.height}`)
+
+  ground
+    .attr('x1', 0)
+    .attr('y1', svgDim.height - 8)
+    .attr('x2', svgDim.width - config.display.padding)
+    .attr('y2', svgDim.height - 8)
 
   renderImage(values)
   renderFront(values)

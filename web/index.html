@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset=utf-8>
+		<title>Enzo Mari: Tavolo Rettangolare</title>
+		<style>
+      body {
+        display: flex;
+        flex-direction: column;
+        font-size: 14px;
+        font-family: sans-serif;
+      }
+      h1, h3, th, label {
+        text-transform: uppercase;
+      }
+      h1 {
+        font-size: 1.2em;
+        margin-bottom: 3ex;
+      }
+      h3:first-child {
+        margin-top: 0;
+      }
+      input {
+        width: 4em;
+        border: none;
+        border-bottom: 1px dashed black;
+        text-align: right;
+        font-weight: bold;
+      }
+
+      /* margins */
+      .page {
+        height: 94vh;
+        margin: 3vh 3vw;
+      }
+      .view {
+        min-height: 38vh;
+        align-self: flex-end;
+      }
+      .page {
+        flex: 1;
+        outline: 1px solid black;
+      }
+
+      .top-row,
+      .bottom-row,
+      .tables-row  {
+        display: flex;
+      }
+
+      .header-row {
+        min-height: 10vh;
+      }
+      .spaced {
+        padding: 3vh 3vw;
+      }
+
+      .perspective {
+        width: 38.2%;
+      }
+      .top {
+        width: 61.8%;
+      }
+      .side {
+        width: 38.2%;
+      }
+      .front {
+        width: 61.8%;
+      }
+      
+      .material {
+        width: 38.2%;
+        text-align: right;
+      }
+      .meta {
+        width: 61.8%;
+        text-align: right;
+      }
+
+      table {
+        border-collapse: collapse;
+        margin: 0;
+        display: inline-block;
+      }
+      th,
+      td {
+        border: 1px solid black;
+        padding: 1ex 1em;
+        text-align: center;
+        vertical-align: bottom;
+      }
+      .material-table th:first-child {
+        border-left: none;
+        font-family: serif;
+      }
+
+
+      .author-table {
+        text-transform: uppercase;
+      }
+      .author-table .nr th:first-child {
+        font-family: serif;
+      }
+      .author-table .nr th {
+        padding: 0.5ex 1em 0 0.5em;
+        text-align: left;
+      }
+      .author-table td {
+        padding: 0.5ex 1em 0.75ex 0.5em;
+      }
+      .author-table .nr strong {
+        font-size: 2.5em;
+      }
+      .author-table td {
+        text-align: left;
+      }
+      .author-table .addr span {
+        padding-left: 1.25em;
+      }
+      .author-table .addr span:first-child {
+        padding-left: 0;
+      }
+
+
+      @media (max-width: 1200px) {
+        .top-row,
+        .bottom-row {
+          display: flex;
+          flex-direction: column;
+        }
+        .view {
+          width: 100%;
+        }
+      }
+		</style>
+	</head>
+	<body>
+    <div class=page>
+      <div class="header-row spaced">
+        <h1>Explore own dimensions with Enzo Mari's <em>Tavolo Rettangolare</em> from <a href=resources/Enzo-Mari-Autoprogettazione2.pdf>autoprogettazione?</a></h1>
+        <form id=inputs-form class=inputs-form>
+          <label>Lath</label>
+          <select id=lath-select-input>
+            <option value="2x10" selected>2 x 10</option>
+            <option value="1.8x9.8">1.8 x 9.8</option>
+            <option value="3.8x3.8">3.8 x 3.8</option>
+            <option value="3.8x5.8">3.8 x 5.8</option>
+            <option value="4x12">4 x 12</option>
+          </select>
+
+          <label>Width</label>
+          <input id=width-n-lath-input type=number min=6 max=16 value=8 step=1> N laths
+          (=<output id=width-output>80</output>cm)
+
+          <label>Length</label>
+          <input id=length-input type=number min=80 max=300 value=200>
+
+          <label>Height</label>
+          <input id=height-input type=number min=30 max=150 value=70>
+        </form>
+      </div>
+      <div class=top-row>
+        <div class="view perspective" id=perspective-view></div>
+        <div class="view top" id=top-view></div>
+      </div>
+      <div class=bottom-row>
+        <div class="view side" id=side-view></div>
+        <div class="view front" id=front-view></div>
+      </div>
+      <div class="tables-row spaced">
+        <div class="view material" id=table-view>
+          <h3>Tavoleite Occorrenti</h3>
+          <table id=tavoleite>
+            <tr>
+              <th></th>
+              <th>Sezione</th>
+              <th>Lunghezza</th>
+              <th>Quantita`</th>
+            </tr>
+            <tr>
+              <th>A</th>
+              <td><output id=lath-size-output></td>
+              <td><output id=lath-a-length-output></td>
+              <td><output id=lath-a-nr-output></td>
+            </tr>
+            <tr>
+              <th>B</th>
+              <td>"</td>
+              <td><output id=lath-b-length-output></td>
+              <td>2</td>
+            </tr>
+            <tr>
+              <th>C</th>
+              <td>"</td>
+              <td><output id=lath-c-length-output></td>
+              <td>5</td>
+            </tr>
+            <tr>
+              <th>D</th>
+              <td>"</td>
+              <td><output id=lath-d-length-output></td>
+              <td>4</td>
+            </tr>
+            <tr>
+              <th>E</th>
+              <td>"</td>
+              <td><output id=lath-e-length-output></td>
+              <td>2</td>
+            </tr>
+            <tr>
+              <th>F</th>
+              <td>"</td>
+              <td><output id=lath-f-length-output></td>
+              <td>4</td>
+            </tr>
+            <tr>
+              <th>G</th>
+              <td>"</td>
+              <td><output id=lath-g-length-output></td>
+              <td>4</td>
+            </tr>
+            <tr>
+              <th></th>
+              <td>"</td>
+              <th><output id=lath-total-length-output></th>
+              <th><output id=lath-total-nr-output></th>
+            </tr>
+          </table>
+        </div>
+        <div class="view meta">
+          <table class=author-table>
+            <tr class=nr>
+              <th>1123 x<strong>B</strong></th>
+              <th>TF</th>
+              <th>5/73</th>
+            </tr>
+            <tr>
+              <td colspan=3>&nbsp;</td>
+            </tr>
+            <tr>
+              <td colspan=3>Tavolo Rettangolare</td>
+            </tr>
+            <tr>
+              <td colspan=3 class=addr>
+                <span>Enzo Mari</span>
+                <span>Piazzale Baracca 10</span>
+                <span>20123 Milano</span>
+                <span>Telefono 4693661</span>
+              </td>
+            </tr>
+            <tr>
+              <td colspan=3>This app has been made by <a href=https://tf-fabrik.de/>Johannes J. Schmidt</a> &copy; 2019 Berlin</td>
+            </tr>
+            <tr>
+              <td colspan=3>Site is not affiliated by Enzo Mari in any way</td>
+            </tr>
+            <tr>
+              <td colspan=3>View a <a href=images/drawing.jpg>photo of the original plan</a> and a <a href=images/photo.jpg>photo of the table</a> taken from <a href=resources/Enzo-Mari-Autoprogettazione2.pdf>the book</a></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+		<script src="js/three.js"></script>
+		<script src="js/OrbitControls.js"></script>
+		<script src="config.js"></script>
+		<script src="table.js"></script>
+		<script src="scene.js"></script>
+		<script src="index.js"></script>
+	</body>
+</html>

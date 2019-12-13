@@ -1,6 +1,6 @@
 # Enzo Mari's _Tavolo Rettangolare_ in your own dimensions
 
-The table in code.
+The table in code: https://jo.github.io/enzo-mari/
 
 
 from the book [autoprogettazione?](resources/Enzo-Mari-Autoprogettazione2.pdf):

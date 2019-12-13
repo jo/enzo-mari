@@ -1,4 +1,8 @@
-# ENZO MARI
+# Enzo Mari's _Tavolo Rettangolare_ in your own dimensions
+
+The table in code.
+
+
 from the book [autoprogettazione?](resources/Enzo-Mari-Autoprogettazione2.pdf):
 
     A project for making easy-to-assemble

@@ -3,8 +3,6 @@
 The table in code: https://jo.github.io/enzo-mari/
 
 
-from the book [autoprogettazione?](resources/Enzo-Mari-Autoprogettazione2.pdf):
-
     A project for making easy-to-assemble
     furniture using rough boards and nails.
     An elementary technizue to teach anyone
@@ -22,6 +20,8 @@ from the book [autoprogettazione?](resources/Enzo-Mari-Autoprogettazione2.pdf):
     29123 Milan).
 
     © project Enzo Mari, 1974
+
+from the book [autoprogettazione?](resources/Enzo-Mari-Autoprogettazione2.pdf)
 
 
 ## Tavolo Rettangolare

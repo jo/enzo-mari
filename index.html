@@ -1,251 +1,254 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="utf-8">
+		<meta charset=utf-8>
 		<title>Enzo Mari: Tavolo Rettangolare</title>
 		<style>
-      .drawing > div { background: white; }
-
       body {
-        margin: 0; 
-        padding: 5vh 3vh 9vh 6vw;
+        display: flex;
+        flex-direction: column;
         font-size: 14px;
         font-family: sans-serif;
+      }
+      h1, h3, th, label {
         text-transform: uppercase;
       }
-      text, output {
+      #lath-total-length-output {
         text-transform: none;
       }
+      h1 {
+        font-size: 1.2em;
+        margin-bottom: 3ex;
+      }
+      h3:first-child {
+        margin-top: 0;
+      }
       input {
+        width: 4em;
         border: none;
         border-bottom: 1px dashed black;
         text-align: right;
         font-weight: bold;
       }
-      
 
-      .paper .inputs {
-        padding: 3ex 3vw;
-        box-sizing: border-box;
+      /* margins */
+      .page {
+        height: 94vh;
+        margin: 3vh 3vw;
       }
-      .paper .drawing {
-        padding: 3vh 3vw 0 3vw;
-        box-sizing: border-box;
-        text-align: right;
+      .view {
+        min-height: 38vh;
+        align-self: flex-end;
       }
-      .paper .main {
-        text-align: right;
-      }
-      .paper .main .tables {
-        text-align: left;
-      }
-      .paper .tables {
-        padding: 6ex 3vh 0 0;
-        box-sizing: border-box;
-        display: inline-block;
-      }
-      .paper .table-with-header {
-        display: inline-block;
-      }
-      .paper .table-with-header h3 {
-        text-align: center;
-      }
-      .paper .info {
-        padding: 0 3vh 3ex;
-        text-align: left;
-      }
-      .tables h3 { margin: 0; font-weight: normal; }
-      
-      .paper {
+      .page {
+        flex: 1;
         outline: 1px solid black;
       }
-      .paper svg.drawing {
-        width: 100%;
+
+      .top-row,
+      .bottom-row,
+      .tables-row  {
+        display: flex;
       }
-      .paper .inputs-form {
-        margin: 0;
+
+      .header-row {
+        min-height: 10vh;
       }
-      .paper label:after {
-        content: ':';
+      .spaced {
+        padding: 3vh 3vw;
       }
-      .paper input {
-        width: 4em;
+      .spaced:last-child {
+        padding-bottom: 2vh;
       }
-      .paper table {
+
+      .perspective {
+        width: 38.2%;
+      }
+      .top {
+        width: 61.8%;
+      }
+      .side {
+        width: 38.2%;
+      }
+      .front {
+        width: 61.8%;
+      }
+      
+      .material {
+        width: 38.2%;
+        text-align: left;
+      }
+      .meta {
+        width: 61.8%;
+        text-align: right;
+      }
+
+      table {
         border-collapse: collapse;
-        margin: 0 0 3ex 4em;
+        margin: 0;
         display: inline-block;
       }
-      .paper table th,
-      .paper table td {
+      th,
+      td {
         border: 1px solid black;
         padding: 1ex 1em;
         text-align: center;
         vertical-align: bottom;
       }
-      #tavoleite th:first-child {
+      .material-table th:first-child {
         border-left: none;
         font-family: serif;
       }
-      #material .nr th:first-child {
+
+
+      .author-table {
+        text-transform: uppercase;
+      }
+      .author-table .nr th:first-child {
         font-family: serif;
       }
-      #material .nr th {
+      .author-table .nr th {
         padding: 0.5ex 1em 0 0.5em;
         text-align: left;
       }
-      #material td {
+      .author-table td {
         padding: 0.5ex 1em 0.75ex 0.5em;
       }
-      #material .nr strong {
+      .author-table .nr strong {
         font-size: 2.5em;
       }
-      #material td {
+      .author-table td {
         text-align: left;
       }
-      #material .addr span {
+      .author-table .addr span {
         padding-left: 1.25em;
       }
-      text.lath-title {
-        font-family: serif;
-        font-weight: bold;
-      }
-      #material .addr span:first-child {
+      .author-table .addr span:first-child {
         padding-left: 0;
       }
-      .paper rect {
-        transform-origin: center;
-        fill: white;
-        stroke: black;
-        stroke-width: 2px;
-        opacity: 0.8;
-      }
-      .paper rect.stirn {
-        fill: #aaa;
-      }
-      .paper line {
-        stroke-width: 1px;
-        stroke: black;
-      }
-      .paper line.ground {
-        stroke-width: 2px;
-        stroke: black;
-      }
-      .paper text {
-        font-size: 26px;
-      }
-      .paper rect.contour {
-        fill: none;
-      }
-      .paper rect.plate.lath.top-rects {
-        stroke-width: 0.5px;
-      }
-      @media print {
-        body {
-          padding: 0;
-          margin: 0;
-          font-size: 10px;
-          text-align: left;
-        }
-        .paper .main {
-          text-align: left;
-        }
-        .paper { outline: none; }
-        input {
-          border-bottom: none;
-        }
-      }
 
+
+      @media (max-width: 1200px) {
+        .top-row,
+        .bottom-row {
+          display: flex;
+          flex-direction: column;
+        }
+        .view {
+          width: 100%;
+        }
+      }
 		</style>
 	</head>
 	<body>
-    <div class=paper>
-      <div class=inputs>
-        <h3>Explore own dimensions with Enzo Mari's <em>Tavolo Rettangolare</em> from <a href=resources/Enzo-Mari-Autoprogettazione2.pdf>autoprogettazione?</a></h3>
+    <div class=page>
+      <div class="header-row spaced">
+        <h1>Enzo Mari's <em>Tavolo Rettangolare</em> in your own dimensions</h1>
         <form id=inputs-form class=inputs-form>
           <label>Lath</label>
-          <input id=lath-height-input type="input">
-          x
-          <input id=lath-width-input type="input">,
+          <select id=lath-select-input>
+            <option value="1.7x3.7">1.7 x 3.7</option>
+            <option value="1.9x9.4">1.9 x 9.4</option>
+            <option value="2.3x10" selected>2.3 x 10</option>
+            <option value="2.4x4.8">2.4 x 4.8</option>
+            <option value="2x10">2 x 10</option>
+            <option value="3x5">3 x 5</option>
+            <option value="3.8x5.8">3.8 x 5.8</option>
+          </select>
 
           <label>Width</label>
-          <input id=width-n-lath-input type="input"> N laths
-          (=<output id=width-output>800</output>),
+          <input id=width-n-lath-input type=number min=6 max=16 value=8 step=1> N laths
+          (=<output id=width-output>80</output>cm)
 
           <label>Length</label>
-          <input id=length-input type="input">,
+          <input id=length-input type=number min=80 max=300 value=200>
 
           <label>Height</label>
-          <input id=height-input type="input">
+          <input id=height-input type=number min=30 max=150 value=70>
+          
+          <label>Material</label>
+          <output id=lath-total-price-output></output>
         </form>
       </div>
-      <div class=main>
-        <svg class=drawing preserveAspectRatio="xMinYMin meet" />
-        <div class=tables>
-          <div class=table-with-header>
-            <h3>Tavoleite Occorrenti</h3>
-            <table id=tavoleite>
-              <tr>
-                <th></th>
-                <th>Sezione</th>
-                <th>Lunghezza</th>
-                <th>Quantita`</th>
-              </tr>
-              <tr>
-                <th>A</th>
-                <td><output id=lath-size-output></td>
-                <td><output id=lath-a-length-output></td>
-                <td><output id=lath-a-nr-output></td>
-              </tr>
-              <tr>
-                <th>B</th>
-                <td>"</td>
-                <td><output id=lath-b-length-output></td>
-                <td>2</td>
-              </tr>
-              <tr>
-                <th>C</th>
-                <td>"</td>
-                <td><output id=lath-c-length-output></td>
-                <td>5</td>
-              </tr>
-              <tr>
-                <th>D</th>
-                <td>"</td>
-                <td><output id=lath-d-length-output></td>
-                <td>4</td>
-              </tr>
-              <tr>
-                <th>E</th>
-                <td>"</td>
-                <td><output id=lath-e-length-output></td>
-                <td>2</td>
-              </tr>
-              <tr>
-                <th>F</th>
-                <td>"</td>
-                <td><output id=lath-f-length-output></td>
-                <td>4</td>
-              </tr>
-              <tr>
-                <th>G</th>
-                <td>"</td>
-                <td><output id=lath-g-length-output></td>
-                <td>4</td>
-              </tr>
-              <tr>
-                <th></th>
-                <td>"</td>
-                <th><output id=lath-total-length-output></th>
-                <th><output id=lath-total-nr-output></th>
-              </tr>
-            </table>
-          </div>
-          <table id=material>
+      <div class=top-row>
+        <div class="view perspective" id=perspective-view></div>
+        <div class="view top" id=top-view></div>
+      </div>
+      <div class=bottom-row>
+        <div class="view side" id=side-view></div>
+        <div class="view front" id=front-view></div>
+      </div>
+      <div class="tables-row spaced">
+        <div class="view material" id=table-view>
+          <h3>Tavoleite Occorrenti</h3>
+          <table id=tavoleite>
+            <tr>
+              <th></th>
+              <th>Sezione</th>
+              <th>Lunghezza</th>
+              <th>Quantita`</th>
+            </tr>
+            <tr>
+              <th>A</th>
+              <td><output id=lath-size-output></td>
+              <td><output id=lath-a-length-output></td>
+              <td><output id=lath-a-nr-output></td>
+            </tr>
+            <tr>
+              <th>B</th>
+              <td>"</td>
+              <td><output id=lath-b-length-output></td>
+              <td>2</td>
+            </tr>
+            <tr>
+              <th>C</th>
+              <td>"</td>
+              <td><output id=lath-c-length-output></td>
+              <td>5</td>
+            </tr>
+            <tr>
+              <th>D</th>
+              <td>"</td>
+              <td><output id=lath-d-length-output></td>
+              <td>4</td>
+            </tr>
+            <tr>
+              <th>E</th>
+              <td>"</td>
+              <td><output id=lath-e-length-output></td>
+              <td>2</td>
+            </tr>
+            <tr>
+              <th>F</th>
+              <td>"</td>
+              <td><output id=lath-f-length-output></td>
+              <td>4</td>
+            </tr>
+            <tr>
+              <th>G</th>
+              <td>"</td>
+              <td><output id=lath-g-length-output></td>
+              <td>4</td>
+            </tr>
+            <tr>
+              <th></th>
+              <td>"</td>
+              <th>
+                <output id=lath-total-length-output></output>
+              </th>
+              <th>
+                <output id=lath-total-nr-output></output>
+              </th>
+            </tr>
+          </table>
+        </div>
+        <div class="view meta">
+          <h3>.</h3>
+          <table class=author-table>
             <tr class=nr>
-              <th>1123 x<strong>B</strong></th>
-              <th>Scale 1:x</th>
-              <th>5/73</th>
+              <th><strong>1</strong>.0.0</th>
+              <th><output id=lath-type-output></output></th>
+              <th><output id=date-output></output></th>
             </tr>
             <tr>
               <td colspan=3>&nbsp;</td>
@@ -254,28 +257,23 @@
               <td colspan=3>Tavolo Rettangolare</td>
             </tr>
             <tr>
-              <td colspan=3 class=addr>
-                <span>Enzo Mari</span>
-                <span>Piazzale Baracca 10</span>
-                <span>20123 Milano</span>
-                <span>Telefono 4693661</span>
-              </td>
+              <td colspan=3>Design by Enzo Mari 1974 <a href=resources/Enzo-Mari-Autoprogettazione2.pdf>autoprogettazione?</a></td>
             </tr>
             <tr>
-              <td colspan=3>This app has been made by <a href=https://tf-fabrik.de/>Johannes J. Schmidt</a> &copy; 2019 Berlin</td>
+              <td colspan=3>Dynamic by <a href=https://tf-fabrik.de/>Johannes J. Schmidt</a> &copy; TF 2019 Berlin</td>
             </tr>
             <tr>
-              <td colspan=3>Site is not affiliated by Enzo Mari in any way</td>
-            </tr>
-            <tr>
-              <td colspan=3>View a <a href=images/drawing.jpg>photo of the original plan</a> and a <a href=images/photo.jpg>photo of the table</a> taken from <a href=resources/Enzo-Mari-Autoprogettazione2.pdf>the book</a></td>
+              <td colspan=3>Here is the <a href=images/drawing.jpg>Original plan</a> and a <a href=images/photo.jpg>photo of the table</a></td>
             </tr>
           </table>
         </div>
-        <p class=info>* Rotate 45 degrees ** 15 degrees</p>
       </div>
     </div>
-		<script src="js/d3.min.js"></script>
+		<script src="js/three.js"></script>
+		<script src="js/OrbitControls.js"></script>
+		<script src="config.js"></script>
+		<script src="table.js"></script>
+		<script src="scene.js"></script>
 		<script src="index.js"></script>
 	</body>
 </html>

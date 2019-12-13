@@ -4,7 +4,7 @@ class Config {
     this.height = 70
     this.widthN = 8
     this.legRotation = Math.PI/12
-    this.lathType = '2x10'
+    this.lathType = '2.3x10'
   }
 
   set lathType (type) {

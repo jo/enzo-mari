@@ -1,656 +1,145 @@
-const config = {
-  lath: { x: 19, y: 98 },
-  length: 2000,
-  height: 700,
-  widthNLath: 8,
+const prices = {
+  '1.7x3.7': [ 0.46 ],
+  '1.9x9.4': [ 1.8 ],
+  '2.3x10': [ 1.05 ],
+  '2.4x4.8': [ 0.39 ],
+  '3x5': [ 0.6 ],
+  '3.8x5.8': [ 0.84 ]
+}
 
-  // gap between laths
-  gap: 2,
 
-  // distance of the pillars from the edge
-  pillarFactor: 2.5,
+const perspectiveViewElement = document.getElementById('perspective-view')
+const topViewElement = document.getElementById('top-view')
+const sideViewElement = document.getElementById('side-view')
+const frontViewElement = document.getElementById('front-view')
 
-  display: {
-    padding: 200
+const zoom = 4
+
+const perspectiveCamera = new THREE.PerspectiveCamera(60, perspectiveViewElement.clientWidth / perspectiveViewElement.clientHeight, 1, 1000)
+perspectiveCamera.position.set(100, 100, 100)
+const perspectiveScene = buildScene(perspectiveViewElement, perspectiveCamera, true)
+
+const topCamera = new THREE.OrthographicCamera(-topViewElement.clientWidth/2, topViewElement.clientWidth/2, topViewElement.clientHeight/2, -topViewElement.clientHeight/2, -1000)
+topCamera.zoom = zoom
+topCamera.updateProjectionMatrix()
+const topScene = buildScene(topViewElement, topCamera)
+topScene.rotation.x = -Math.PI/2
+topScene.rotation.y = Math.PI/2
+
+const sideCamera = new THREE.OrthographicCamera(-sideViewElement.clientWidth/2, sideViewElement.clientWidth/2, sideViewElement.clientHeight/2, -sideViewElement.clientHeight/2, -1000)
+const sideScene = buildScene(sideViewElement, sideCamera)
+sideCamera.zoom = zoom
+sideCamera.updateProjectionMatrix()
+sideScene.position.y = -40
+
+const frontCamera = new THREE.OrthographicCamera(-frontViewElement.clientWidth/2, frontViewElement.clientWidth/2, frontViewElement.clientHeight/2, -frontViewElement.clientHeight/2, -1000)
+const frontScene = buildScene(frontViewElement, frontCamera)
+frontCamera.zoom = zoom
+frontCamera.updateProjectionMatrix()
+frontScene.rotation.y = -Math.PI/2
+frontScene.position.y = -40
+
+// Build laths objects
+const buildLathGeometry = (config, material) => lath => {
+  const geometry = new THREE.BoxGeometry(config.q2, config.q1, lath.length)
+  const mesh = new THREE.Mesh(geometry, material)
+  
+  mesh.position.x = lath.x
+  mesh.position.y = lath.y
+  mesh.position.z = lath.z
+
+  if (lath.orientation === '---') {
+    mesh.rotation.z = Math.PI/2
   }
-}
-
-d3.select('#lath-width-input').attr('value', config.lath.y)
-d3.select('#lath-height-input').attr('value', config.lath.x)
-d3.select('#width-n-lath-input').attr('value', config.widthNLath)
-d3.select('#width-output').text(config.widthNLath * (config.lath.y + config.gap))
-d3.select('#length-input').attr('value', config.length)
-d3.select('#height-input').attr('value', config.height)
-
-const svg = d3.select('svg.drawing')
-const table = d3.select('table#tavoleite')
-const tbody = table.append("tbody")
-
-const ground = svg.append('line').attr('class', 'ground')
-
-const renderSide = values => {
-  const laths = []
-  const x1 = 0
-  const y1 = values.width + config.display.padding
-  
-  for (var i = 0; i < config.widthNLath; i++) {
-    laths.push({
-      name: 'side plate lath',
-      x: x1 + i*values.lath.dy,
-      y: y1,
-      width: config.lath.y,
-      height: config.lath.x
-    })
+  if (lath.orientation === '-') {
+    mesh.rotation.x = lath.rotation || Math.PI/2
+    mesh.rotation.z = Math.PI/2
   }
-  laths.push({
-    name: 'side f',
-    x: x1 + values.width/2 - values.lath.dy - config.lath.x/2,
-    y: y1 + config.lath.x + config.gap,
-    width: config.lath.y,
-    height: 5*values.lath.dy
-  })
-  laths.push({
-    name: 'side f',
-    x: x1 + values.width/2 + config.lath.x/2,
-    y: y1 + config.lath.x + config.gap,
-    width: config.lath.y,
-    height: 5*values.lath.dy
-  })
-  laths.push({
-    name: 'side f stirn top',
-    x: x1 + values.width/2 - config.lath.x/2,
-    y: y1 + config.lath.x + config.gap + values.lath.dy,
-    width: config.lath.x,
-    height: config.lath.y
-  })
-  laths.push({
-    name: 'side f stirn bottom',
-    x: x1 + values.width/2 - config.lath.x/2,
-    y: y1 + config.lath.x + config.gap + 3*values.lath.dy,
-    width: config.lath.x,
-    height: config.lath.y
-  })
-  laths.push({
-    name: 'side d left',
-    x: x1 + values.lath.dy,
-    y: y1,
-    width: config.lath.y,
-    height: config.height
-  })
-  laths.push({
-    name: 'side d right',
-    x: x1 + values.width - 2*values.lath.dy,
-    y: y1,
-    width: config.lath.y,
-    height: config.height
-  })
-  laths.push({
-    name: 'side e queer bottom',
-    x: x1 + values.lath.dy,
-    y: y1 + config.lath.x + config.gap + 4*values.lath.dy,
-    width: values.width - 2*values.lath.dy,
-    height: config.lath.y
-  })
-  laths.push({
-    name: 'side c plate stuetze',
-    x: x1,
-    y: y1 + config.lath.x + config.gap,
-    width: values.width,
-    height: config.lath.y
-  })
-  laths.push({
-    name: 'side c plate stuetze top',
-    x: x1,
-    y: y1 + config.lath.x + config.gap,
-    width: values.width,
-    height: config.lath.x
-  })
-
-  const rects = svg.selectAll('rect.side-rects')
-    .data(laths)
-
-  rects
-    .attr('x', d => d.x)
-    .attr('class', d => d.name + ' side-rects')
-    .attr('y', d => d.y)
-    .attr('width', d => d.width)
-    .attr('height', d => d.height)
-
-  rects.enter()
-    .append('rect')
-    .attr('class', d => d.name + ' side-rects')
-    .attr('x', d => d.x)
-    .attr('y', d => d.y)
-    .attr('width', d => d.width)
-    .attr('height', d => d.height)
-
-  rects.exit().remove()
-
-
-  const labels = [
-    {
-      title: 'C',
-      name: 'lath-title',
-      x: x1 + config.lath.y/2,
-      y: y1 + config.lath.y/2 + 16 + config.lath.x
-    },
-    {
-      title: 'D**',
-      name: 'lath-title',
-      x: x1 + config.lath.y/2 + values.lath.dy + 16,
-      y: y1 + config.height/2.4
-    },
-    {
-      title: 'D**',
-      name: 'lath-title',
-      x: x1 + values.width - config.lath.y/2 - values.lath.dy + 16,
-      y: y1 + config.height/2.4
-    },
-    {
-      title: 'F',
-      name: 'lath-title',
-      x: x1 + config.lath.y/2 + 3*values.lath.dy + 16,
-      y: y1 + config.height/2.4
-    },
-    {
-      title: 'F',
-      name: 'lath-title',
-      x: x1 + config.lath.y/2 + 4*values.lath.dy + 16 + config.lath.x,
-      y: y1 + config.height/2.4
-    },
-    {
-      title: 'E',
-      name: 'lath-title',
-      x: x1 + config.lath.y/2 + values.lath.dy + 16,
-      y: y1 + config.lath.y/2 + 16 + config.lath.x + 4*values.lath.dy
-    },
-  ]
-  
-  const labelElements = svg.selectAll('text.side-labels')
-    .data(labels)
-
-  labelElements
-    .attr('x', d => d.x)
-    .attr('class', d => d.name + ' side-labels')
-    .attr('x', d => d.x)
-    .attr('y', d => d.y)
-    .text(d => d.title)
-
-  labelElements.enter()
-    .append('text')
-    .attr('class', d => d.name + ' side-labels')
-    .attr('x', d => d.x - 30)
-    .attr('y', d => d.y - 10)
-    .text(d => d.title)
-
-  labelElements.exit().remove()
-}
-
-const renderTop = values => {
-  const x1 = values.width + config.display.padding
-  const y1 = 0
-  const laths = []
-  
-  for (var i = 0; i < config.widthNLath; i++) {
-    laths.push({
-      name: 'plate lath',
-      x: x1,
-      y: y1 + i*values.lath.dy,
-      width: config.length,
-      height: config.lath.y
-    })
+  if (lath.orientation === '|') {
+    mesh.rotation.y = Math.PI/2
+    mesh.rotation.z = Math.PI/2
   }
-  laths.push({
-    name: 'contour',
-    x: x1,
-    y: y1,
-    width: config.length,
-    height: values.width
-  })
-
-  const rects = svg.selectAll('rect.top-rects')
-    .data(laths)
-
-  rects
-    .attr('x', d => d.x)
-    .attr('class', d => d.name + ' top-rects')
-    .attr('y', d => d.y)
-    .attr('width', d => d.width)
-    .attr('height', d => d.height)
-
-  rects.enter()
-    .append('rect')
-    .attr('class', d => d.name + ' top-rects')
-    .attr('x', d => d.x)
-    .attr('y', d => d.y)
-    .attr('width', d => d.width)
-    .attr('height', d => d.height)
-
-  rects.exit().remove()
-
-  const lines = [
-    {
-      name: 'length',
-      x1: x1,
-      y1: y1 + values.width + config.display.padding/2,
-      x2: x1 + config.length,
-      y2: y1 + values.width + config.display.padding/2
-    },
-    {
-      name: 'width',
-      x1: x1 + config.length + config.display.padding/4,
-      y1: y1,
-      x2: x1 + config.length + config.display.padding/4,
-      y2: y1 + values.width
-    }
-  ]
-
-  const lineElements = svg.selectAll('line.top-lines')
-    .data(lines)
-
-  lineElements
-    .attr('x', d => d.x)
-    .attr('class', d => d.name + ' top-lines')
-    .attr('x1', d => d.x1)
-    .attr('y1', d => d.y1)
-    .attr('x2', d => d.x2)
-    .attr('y2', d => d.y2)
-
-  lineElements.enter()
-    .append('line')
-    .attr('class', d => d.name + ' top-lines')
-    .attr('x1', d => d.x1)
-    .attr('y1', d => d.y1)
-    .attr('x2', d => d.x2)
-    .attr('y2', d => d.y2)
-
-  lineElements.exit().remove()
-
-
-  const labels = [
-    {
-      title: 'A',
-      name: 'lath-title',
-      x: x1 + config.lath.y/2,
-      y: y1 + config.lath.y/2 + 16
-    },
-    {
-      title: `mm ${config.length}`,
-      x: x1 + config.length / 2,
-      y: y1 + values.width + config.display.padding/2,
-    },
-    {
-      title: `${values.width}`,
-      x: x1 + config.length + config.display.padding/2,
-      y: y1 + values.width/2 + 10,
-    }
-  ]
-  
-  const labelElements = svg.selectAll('text.top-labels')
-    .data(labels)
-
-  labelElements
-    .attr('x', d => d.x)
-    .attr('class', d => d.name + ' top-labels')
-    .attr('x', d => d.x)
-    .attr('y', d => d.y)
-    .text(d => d.title)
-
-  labelElements.enter()
-    .append('text')
-    .attr('class', d => d.name + ' top-labels')
-    .attr('x', d => d.x - 30)
-    .attr('y', d => d.y - 10)
-    .text(d => d.title)
-
-  labelElements.exit().remove()
-}
-
-const renderFront = values => {
-  const x1 = values.width + config.display.padding
-  const y1 = values.width + config.display.padding
-  const laths = [
-    {
-      name: 'plate',
-      x: x1,
-      y: y1,
-      width: config.length,
-      height: config.lath.x
-    },
-    {
-      name: 'keel top',
-      x: x1 + values.indent.keel,
-      y: y1 + config.lath.x + config.gap + values.lath.dy,
-      width: config.length - 2*values.indent.keel,
-      height: config.lath.y
-    },
-    {
-      name: 'keel bottom',
-      x: x1 + values.indent.keel,
-      y: y1 + config.lath.x + config.gap + 3*values.lath.dy,
-      width: config.length - 2*values.indent.keel,
-      height: config.lath.y
-    },
-    {
-      name: 'keel-pillar left',
-      x: x1 + values.indent.pillar,
-      y: y1 + config.lath.x + config.gap + values.lath.dy,
-      width: config.lath.y,
-      height: 3*values.lath.dy
-    },
-    {
-      name: 'keel-pillar left-b',
-      x: x1 + values.indent.pillar + 2*values.lath.dy,
-      y: y1 + config.lath.x + config.gap + values.lath.dy,
-      width: config.lath.y,
-      height: 3*values.lath.dy
-    },
-    {
-      name: 'keel-pillar right',
-      x: x1 + config.length - values.indent.pillar - config.lath.y,
-      y: y1 + config.lath.x + config.gap + values.lath.dy,
-      width: config.lath.y,
-      height: 3*values.lath.dy
-    },
-    {
-      name: 'keel-pillar right-b',
-      x: x1 + config.length - values.indent.pillar - config.lath.y - 2*values.lath.dy,
-      y: y1 + config.lath.x + config.gap + values.lath.dy,
-      width: config.lath.y,
-      height: 3*values.lath.dy
-    },
-    {
-      name: 'pillar left',
-      x: x1 + values.indent.pillar - config.gap - config.lath.x,
-      y: y1 + config.lath.x + config.gap,
-      width: config.lath.x,
-      height: config.height - config.lath.x - config.gap
-    },
-    {
-      name: 'pillar right',
-      x: x1 + config.length - values.indent.pillar + config.gap,
-      y: y1 + config.lath.x + config.gap,
-      width: config.lath.x,
-      height: config.height - config.lath.x - config.gap
-    },
-    {
-      name: 'queer left top stirn',
-      x: x1 + values.indent.pillar - 2*(config.gap +config.lath.x),
-      y: y1 + config.lath.x + config.gap,
-      width: config.lath.x,
-      height: config.lath.y
-    },
-    {
-      name: 'queer left top stirn plate',
-      x: x1 + values.indent.pillar - 1*values.lath.dy - 2*config.lath.x - 2*config.gap,
-      y: y1 + config.lath.x + config.gap,
-      width: config.lath.y,
-      height: config.lath.x
-    },
-    {
-      name: 'queer left bottom stirn',
-      x: x1 + values.indent.pillar - 2*(config.gap +config.lath.x),
-      y: y1 + config.lath.x + config.gap + 4*values.lath.dy,
-      width: config.lath.x,
-      height: config.lath.y
-    },
-    {
-      name: 'queer right top stirn',
-      x: x1 + config.length - values.indent.pillar + config.lath.x + 2*config.gap,
-      y: y1 + config.lath.x + config.gap,
-      width: config.lath.x,
-      height: config.lath.y
-    },
-    {
-      name: 'queer right mid stirn plate',
-      x: x1 + config.length/2 - config.lath.y/2,
-      y: y1 + config.lath.x + config.gap,
-      width: config.lath.y,
-      height: config.lath.x
-    },
-    {
-      name: 'queer right top stirn plate',
-      x: x1 + config.length - values.indent.pillar + config.lath.x + 2*config.gap + config.lath.x,
-      y: y1 + config.lath.x + config.gap,
-      width: config.lath.y,
-      height: config.lath.x
-    },
-    {
-      name: 'queer right bottom stirn',
-      x: x1 + config.length - values.indent.pillar + config.lath.x + 2*config.gap,
-      y: y1 + config.lath.x + config.gap + 4*values.lath.dy,
-      width: config.lath.x,
-      height: config.lath.y
-    },
-  ]
-  
-  const rects = svg.selectAll('rect.front-rects')
-    .data(laths)
-
-  rects
-    .attr('x', d => d.x)
-    .attr('class', d => d.name + ' front-rects')
-    .attr('y', d => d.y)
-    .attr('width', d => d.width)
-    .attr('height', d => d.height)
-
-  rects.enter()
-    .append('rect')
-    .attr('class', d => d.name + ' front-rects')
-    .attr('x', d => d.x)
-    .attr('y', d => d.y)
-    .attr('width', d => d.width)
-    .attr('height', d => d.height)
-
-
-  rects.exit().remove()
-
-  
-  const lines = [
-    {
-      name: 'height',
-      x1: x1 + config.length + config.display.padding/4,
-      y1: y1,
-      x2: x1 + config.length + config.display.padding/4,
-      y2: y1 + config.height
-    }
-  ]
-
-  const lineElements = svg.selectAll('line.front-lines')
-    .data(lines)
-
-  lineElements
-    .attr('x', d => d.x)
-    .attr('class', d => d.name + ' front-lines')
-    .attr('x1', d => d.x1)
-    .attr('y1', d => d.y1)
-    .attr('x2', d => d.x2)
-    .attr('y2', d => d.y2)
-
-  lineElements.enter()
-    .append('line')
-    .attr('class', d => d.name + ' front-lines')
-    .attr('x1', d => d.x1)
-    .attr('y1', d => d.y1)
-    .attr('x2', d => d.x2)
-    .attr('y2', d => d.y2)
-
-  lineElements.exit().remove()
-
-
-  const labels = [
-    {
-      title: `${config.height}`,
-      x: x1 + config.length + config.display.padding/2,
-      y: y1 + config.height/2 + 10,
-    },
-    {
-      title: 'B',
-      name: 'lath-title',
-      x: x1 + values.indent.keel + config.lath.y / 2,
-      y: y1 + config.lath.x + config.gap + values.lath.dy + config.lath.y/2 + 16
-    },
-    {
-      title: 'B',
-      name: 'lath-title',
-      x: x1 + values.indent.keel + config.lath.y / 2,
-      y: y1 + config.lath.x + config.gap + 3*values.lath.dy + config.lath.y/2 + 16
-    },
-    {
-      title: 'G',
-      name: 'lath-title',
-      x: x1 + values.indent.pillar + config.lath.y / 2,
-      y: y1 + config.lath.x + config.gap + 2*values.lath.dy + config.lath.y/2 + 16
-    },
-    {
-      title: 'G*',
-      name: 'lath-title',
-      x: x1 + values.indent.pillar + config.lath.y / 2 + 16 + 2*values.lath.dy,
-      y: y1 + config.lath.x + config.gap + 2*values.lath.dy + config.lath.y/2 + 16
-    },
-    {
-      title: 'G',
-      name: 'lath-title',
-      x: x1 + config.length - values.indent.pillar - config.lath.y / 2,
-      y: y1 + config.lath.x + config.gap + 2*values.lath.dy + config.lath.y/2 + 16
-    },
-    {
-      title: 'G*',
-      name: 'lath-title',
-      x: x1 + config.length - values.indent.pillar - config.lath.y / 2 + 16 - 2*values.lath.dy,
-      y: y1 + config.lath.x + config.gap + 2*values.lath.dy + config.lath.y/2 + 16
-    },
-  ]
-  
-  const labelElements = svg.selectAll('text.front-labels')
-    .data(labels)
-
-  labelElements
-    .attr('x', d => d.x)
-    .attr('class', d => d.name + ' front-labels')
-    .attr('x', d => d.x)
-    .attr('y', d => d.y)
-    .text(d => d.title)
-
-  labelElements.enter()
-    .append('text')
-    .attr('class', d => d.name + ' front-labels')
-    .attr('x', d => d.x - 30)
-    .attr('y', d => d.y - 10)
-    .text(d => d.title)
-
-  labelElements.exit().remove()
-}
-
-
-
-const renderTable = values => {
-  const laths = [
-    {
-      title: 'A',
-      dim: `${config.lath.x}x${config.lath.y}`,
-      q: config.widthNLath,
-      l: config.length
-    }
-  ]
-
-  d3.select('#lath-size-output').text(`${config.lath.x} x ${config.lath.y}`)
-  d3.select('#lath-a-length-output').text(config.length)
-  d3.select('#lath-a-nr-output').text(config.widthNLath)
-  d3.select('#lath-b-length-output').text(config.length - 2*values.indent.keel)
-  d3.select('#lath-c-length-output').text(values.width)
-  d3.select('#lath-d-length-output').text(config.height - config.lath.x)
-  d3.select('#lath-e-length-output').text(values.width - 2*values.lath.dy)
-  d3.select('#lath-f-length-output').text(5*values.lath.dy)
-  d3.select('#lath-g-length-output').text(3*values.lath.dy)
-  // a
-  const length = config.widthNLath*config.length
-    // b
-    + 2*(config.length - 2*values.indent.keel)
-    // c
-    + 5*values.width
-    // d
-    + 4*(config.height - config.lath.x)
-    // e
-    + 2*(values.width - 2*values.lath.dy)
-    // f
-    + 4*(5*values.lath.dy)
-    // g
-    + 4*(3*values.lath.dy)
-  d3.select('#lath-total-length-output').text(`${length/1000}m`)
-  d3.select('#lath-total-nr-output').text(config.widthNLath + 2 + 5 + 4 + 2 + 4 + 4)
-}
-
-let imageRendered = false
-const renderImage = values => {
-  if (imageRendered) return
-  svg.append('image')
-    .attr('xlink:href', 'images/drawing-cropped.jpg')
-    .attr('x', 10)
-    .attr('width', values.width)
-    .attr('height', config.height)
-  imageRendered = true
-}
-
-const updateForm = ({ id, value }) => {
-  value = parseInt(value, 10)
-  switch (id) {
-    case 'lath-width-input':
-      config.lath.y = value
-    break;
-    case 'lath-height-input':
-      config.lath.x = value
-    break;
-    case 'width-n-lath-input':
-      config.widthNLath = value
-    break;
-    case 'length-input':
-      config.length = value
-    break;
-    case 'height-input':
-      config.height = value
-    break;
-    case undefined:
-    break;
-    default:
-      console.log('unknown field', id, value)
-      break;
+  if (lath.orientation === '||') {
+    mesh.rotation.y = Math.PI/2
   }
-  // console.log(config)
-  const dy = config.lath.y + config.gap
-  const values = {
-    width: config.widthNLath * dy,
-    lath: {
-      dy
-    },
-    indent: {
-      keel: config.lath.x + config.gap,
-      pillar: config.pillarFactor * dy
+  if (lath.orientation === "'") {
+    mesh.rotation.x = Math.PI/2
+    if (lath.rotation) {
+      mesh.rotation.y = lath.rotation
     }
   }
-  // console.log(values)
-  
-  d3.select('#width-output').text(`${values.width}mm`)
 
-
-  const svgDim = {
-    width: values.width + config.display.padding + config.length + 10 + config.display.padding,
-    height: values.width + config.display.padding + config.height + 10
-  }
-  svg.attr('viewBox', `0 0 ${svgDim.width} ${svgDim.height}`)
-
-  ground
-    .attr('x1', 0)
-    .attr('y1', svgDim.height - 8)
-    .attr('x2', svgDim.width - config.display.padding)
-    .attr('y2', svgDim.height - 8)
-
-  renderImage(values)
-  renderFront(values)
-  renderTop(values)
-  renderSide(values)
-  renderTable(values)
+  return mesh
 }
-d3.select('#inputs-form').on('change', () => updateForm(d3.event.target))
-updateForm({})
+
+const config = new Config()
+const texture = new THREE.TextureLoader().load('textures/wood.jpg')
+const material = new THREE.MeshBasicMaterial({ map: texture })
+
+const addGeometries = (laths, scene) => {
+  const oldGroup = scene.getObjectByName('my-table')
+  if (oldGroup) scene.remove(oldGroup)
+
+  const geometries = laths.map(buildLathGeometry(config, material))
+  const group = new THREE.Group()
+  group.name = 'my-table'
+  
+  geometries.forEach(g => group.add(g))
+
+  scene.add(group)
+}
+
+const updateWidthOutput = value => document.getElementById('width-output').innerText = round(value)
+
+document.getElementById('lath-select-input').onchange = e => {
+  config.lathType = e.target.value
+  updateWidthOutput(config.width)
+  render()
+}
+document.getElementById('width-n-lath-input').onchange = e => {
+  config.widthN = parseInt(e.target.value)
+  updateWidthOutput(config.width)
+  render()
+}
+document.getElementById('length-input').onchange = e => {
+  config.length = parseFloat(e.target.value)
+  render()
+}
+document.getElementById('height-input').onchange = e => {
+  config.height = parseFloat(e.target.value)
+  render()
+}
+
+const round = value => Math.round(value*10)/10
+
+const render = () => {
+  const laths = buildLaths(config)
+  // console.log(laths)
+
+  const materialSum = laths.reduce((memo, lath) => memo + lath.length, 0)
+  // console.log('Material: ', materialSum)
+  document.getElementById('lath-total-length-output').innerText = `${Math.round(materialSum/100)}m`
+  document.getElementById('lath-total-nr-output').innerText = laths.length
+  const price = config.lathType in prices && prices[config.lathType][0]*materialSum / 100 + 5
+  document.getElementById('lath-total-price-output').innerText = price > 0 ? `~${Math.round(price)}€` : '?'
+  document.getElementById('lath-a-nr-output').innerText = config.widthN
+  document.getElementById('lath-size-output').innerText = config.lathType
+  document.getElementById('lath-type-output').innerText = config.lathType
+  const date = new Date
+  document.getElementById('date-output').innerText = `${date.getMonth()+1}/${date.getFullYear()}`
+
+  
+  const lengths = buildLengths(config)
+
+  Object.keys(lengths).forEach(name => {
+    document.getElementById(`lath-${name.toLowerCase()}-length-output`).innerText = round(lengths[name])
+  })
+
+  addGeometries(laths, perspectiveScene)
+  addGeometries(laths, topScene)
+  addGeometries(laths, sideScene)
+  addGeometries(laths, frontScene)
+}
+
+render()
 

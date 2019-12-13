@@ -211,7 +211,7 @@ const buildLaths = config => {
     orientation: '-',
     length: lengths.G,
     y: config.height - config.q1/2 - 2.5*config.q2,
-    x: config.q1/2,
+    x: config.q1,
     z: config.length / 2 - config.q2/2 - 2*config.q2 - config.q1
   })
   arr.push({
@@ -220,7 +220,7 @@ const buildLaths = config => {
     orientation: '-',
     length: lengths.G,
     y: config.height - config.q1/2 - 2.5*config.q2,
-    x: config.q1/2,
+    x: config.q1,
     z: config.length / 2 - config.q2/2 - 4*config.q2 - config.q1,
     rotation: Math.PI/4
   })
@@ -230,7 +230,7 @@ const buildLaths = config => {
     orientation: '-',
     length: lengths.G,
     y: config.height - config.q1/2 - 2.5*config.q2,
-    x: config.q1/2,
+    x: config.q1,
     z: -config.length / 2 + config.q2/2 + 4*config.q2 + config.q1,
     rotation: -Math.PI/4
   })
@@ -240,7 +240,7 @@ const buildLaths = config => {
     orientation: '-',
     length: lengths.G,
     y: config.height - config.q1/2 - 2.5*config.q2,
-    x: config.q1/2,
+    x: config.q1,
     z: -config.length / 2 + config.q2/2 + 2*config.q2 + config.q1
   })
 

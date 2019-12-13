@@ -17,7 +17,7 @@ from the book [autoprogettazione?](resources/Enzo-Mari-Autoprogettazione2.pdf):
     studio at 10 piazzale Baracca, 10 -
     29123 Milan).
 
-    &copy; project Enzo Mari, 1974
+    © project Enzo Mari, 1974
 
 
 ## Tavolo Rettangolare

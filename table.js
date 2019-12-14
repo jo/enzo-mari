@@ -8,6 +8,76 @@
 //   "'":   { side: '||',  front: '|' },
 // }
 
+const D = config => {
+  const group = 'side'
+  const orientation = "'"
+  // TODO: decouple or expose for length table
+  const length = config.height / Math.cos(config.legRotation) - config.q2
+  const z = config.length/2 - 2*config.q2 - config.q1/2
+
+  // distance on top for screw
+  const dd = config.q2/2 
+  const fest = config.q1/2 + config.q2 + dd
+  const rest = config.width/2 - fest
+  const x = fest + rest/2
+  const y = config.height/2
+  const rotation = config.legRotation
+
+  return [
+    {
+      name: 'D1',
+      group, orientation, length,
+      x, y, z, rotation
+    },
+    {
+      name: 'D2',
+      group, orientation, length,
+      x: -x, y, z, rotation: -rotation
+    },
+    {
+      name: 'D3',
+      group, orientation, length,
+      x, y, z: -z, rotation
+    },
+    {
+      name: 'D4',
+      group, orientation, length,
+      x: -x, y, z: -z, rotation: -rotation
+    }
+  ]
+}
+
+const E = config => {
+  const group = 'side'
+  const orientation = '|'
+  const x = 0
+  const y = config.height - 4*config.q2 - config.q2/2 - config.q1/2
+  const z = config.length/2 - 2*config.q2 + config.q1/2
+
+  // TODO: calculate length from y
+  // TODO: decouple or expose for length table
+  const dd = config.q2/2 
+  const fest = config.q1/2 + config.q2 + dd
+  const rest = config.width/2 - fest
+  const length = 2*(fest + rest/2 + Math.tan(config.legRotation) * (y - (config.height/2 - config.q2))) + 1.5*config.q2
+  // console.log(length)
+
+  const left = {
+    name: `E L`,
+    group, orientation,
+    length,
+    x, y, z
+  }
+  const right = {
+    name: `E R`,
+    group, orientation,
+    length,
+    x, y, z: -z
+  }
+
+  return [left, right]
+}
+
 
 const buildLengths = config => ({
   A: config.length,
@@ -20,7 +90,7 @@ const buildLengths = config => ({
 })
 
 const buildLaths = config => {
-  const arr = []
+  let arr = []
 
   const lengths = buildLengths(config)
   
@@ -105,70 +175,12 @@ const buildLaths = config => {
   })
 
   // D
-  const dd = config.q2/2
-  const fest = config.q1/2 + config.q2 + dd
-  const two = config.width/2 - fest
-  const dx = fest + two/2
-  arr.push({
-    name: `D1`,
-    group: 'side',
-    orientation: "'",
-    length: lengths.D,
-    y: config.height/2 -config.q1/2,
-    x: dx,
-    z: config.length/2 - 2*config.q2 - config.q1/2,
-    rotation: config.legRotation
-  })
-  arr.push({
-    name: `D2`,
-    group: 'side',
-    orientation: "'",
-    length: lengths.D,
-    y: config.height/2 -config.q1/2,
-    x: -dx,
-    z: config.length/2 - 2*config.q2 - config.q1/2,
-    rotation: -config.legRotation
-  })
-  arr.push({
-    name: `D3`,
-    group: 'side',
-    orientation: "'",
-    length: lengths.D,
-    y: config.height/2 -config.q1/2,
-    x: dx,
-    z: -config.length/2 + 2*config.q2 + config.q1/2,
-    rotation: config.legRotation
-  })
-  arr.push({
-    name: `D4`,
-    group: 'side',
-    orientation: "'",
-    length: lengths.D,
-    y: config.height/2 -config.q1/2,
-    x: -dx,
-    z: -config.length/2 + 2*config.q2 + config.q1/2,
-    rotation: -config.legRotation
-  })
+  const ds = D(config)
+  arr = arr.concat(ds)
 
   // E
-  arr.push({
-    name: `E1`,
-    group: 'side',
-    orientation: '|',
-    length: lengths.E,
-    y: config.height - 4*config.q2 - config.q2/2 - config.q1/2,
-    x: 0,
-    z: config.length/2 - 2*config.q2 + config.q1/2
-  })
-  arr.push({
-    name: `E2`,
-    group: 'side',
-    orientation: '|',
-    length: lengths.E,
-    y: config.height - 4*config.q2 - config.q2/2 - config.q1/2,
-    x: 0,
-    z: -config.length/2 + 2*config.q2 - config.q1/2
-  })
+  const es = E(config)
+  arr = arr.concat(es)
 
   // F
   arr.push({

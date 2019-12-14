@@ -120,7 +120,10 @@ const render = () => {
   // console.log('Material: ', materialSum)
   document.getElementById('lath-total-length-output').innerText = `${Math.round(materialSum/100)}m`
   document.getElementById('lath-total-nr-output').innerText = laths.length
-  const price = config.lathType in prices && prices[config.lathType][0]*materialSum / 100 + 5
+  
+  // Nägel etc
+  const grundpreis = 3
+  const price = config.lathType in prices && prices[config.lathType][0]*materialSum / 100 + grundpreis
   document.getElementById('lath-total-price-output').innerText = price > 0 ? `~${Math.round(price)}€` : '?'
   document.getElementById('lath-a-nr-output').innerText = config.widthN
   document.getElementById('lath-size-output').innerText = config.lathType

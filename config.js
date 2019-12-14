@@ -22,7 +22,7 @@ class Config {
     const fest = this.q1/2 + this.q2 + 2*dd
     const x2 = (this.width/2 - fest)/2
 
-    return Math.atan(x2/(this.height/2))
+    return Math.atan(x2/(this.height/2 - this.q2))
   }
 
   get width () {

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.0 Dynamic Legs
+
+Dynamically adjust length and angle of legs depending on outer table dimensions.
+
 ## 1.0.0 Initial release
 
 Threejs based view of table with dynamic length, height, width and lath type.

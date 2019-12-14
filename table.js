@@ -8,12 +8,13 @@
 //   "'":   { side: '||',  front: '|' },
 // }
 
+
 const buildLengths = config => ({
   A: config.length,
   B: config.length - 2*config.q1,
   C: config.width,
-  D: config.height,
-  E: config.legLength,
+  D: config.height / Math.cos(config.legRotation) - config.q2,
+  E: config.width - config.q2,
   F: 5*config.q2,
   G: 3*config.q2
 })
@@ -104,7 +105,10 @@ const buildLaths = config => {
   })
 
   // D
-  const dx = config.q2/2 + config.q1/2 + 2*config.q2
+  const dd = config.q2/2
+  const fest = config.q1/2 + config.q2 + dd
+  const two = config.width/2 - fest
+  const dx = fest + two/2
   arr.push({
     name: `D1`,
     group: 'side',

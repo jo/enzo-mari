@@ -3,7 +3,7 @@ class Config {
     this.length = 200
     this.height = 70
     this.widthN = 8
-    this.legRotation = Math.PI/12
+  
     this.lathType = '2.3x10'
   }
 
@@ -17,11 +17,15 @@ class Config {
     return `${this.q1}x${this.q2}`
   }
 
-  get width () {
-    return this.widthN * this.q2
+  get legRotation () {
+    const dd = this.q2/2
+    const fest = this.q1/2 + this.q2 + 2*dd
+    const x2 = (this.width/2 - fest)/2
+
+    return Math.atan(x2/(this.height/2))
   }
 
-  get legLength () {
-    return this.width - this.q2
+  get width () {
+    return this.widthN * this.q2
   }
 }

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.0 Going full Dynamic
+
+Fixes past dynamics, add correct dynamics for D (angel and length) and E
+
 ## 1.1.0 Dynamic Legs
 
 Dynamically adjust length and angle of legs depending on outer table dimensions.

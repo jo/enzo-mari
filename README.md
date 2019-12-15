@@ -29,4 +29,3 @@ from the book [autoprogettazione?](resources/Enzo-Mari-Autoprogettazione2.pdf)
 ![Drawing of table, including material list](./images/drawing.jpg)
 
 ![Photo of table](./images/photo.jpg)
-

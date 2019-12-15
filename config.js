@@ -25,6 +25,10 @@ class Config {
     return Math.atan(x2/(this.height/2 - this.q2))
   }
 
+  get krag () {
+    return 2*this.q2 + this.q1
+  }
+
   get width () {
     return this.widthN * this.q2
   }

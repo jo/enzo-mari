@@ -132,7 +132,8 @@ const render = () => {
   document.getElementById('date-output').innerText = `${date.getMonth()+1}/${date.getFullYear()}`
 
   
-  const lengths = buildLengths(config)
+  // const lengths = buildLengths(config)
+  const lengths = getLengths(laths)
 
   Object.keys(lengths).forEach(name => {
     document.getElementById(`lath-${name.toLowerCase()}-length-output`).innerText = round(lengths[name])
